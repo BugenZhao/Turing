@@ -9,6 +9,9 @@ import Foundation
 
 public enum Direction: Equatable, Hashable {
     case L, R, S
+    static var left: Direction { .L }
+    static var right: Direction { .R }
+    static var stay: Direction { .S }
 }
 
 

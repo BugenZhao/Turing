@@ -1,28 +1,26 @@
 import TuringLib
 
 enum Symbol: String, CustomStringConvertible {
-    var description: String { return rawValue }
-
     case 👉, 👈
-    case zero = "0", one = "1"
+    case rei = "0", ichi = "1"
+    var description: String { return rawValue }
 }
 
 enum State {
-    case start, halt
-    case moving
+    case start, halt, moving
 }
 
 let machine = TuringMachine<State, Symbol>(tapeCount: 1, initialState: .start)
-
 let instructions: [Instruction<State, Symbol>] = [
     Instruction(.start, [.👉], .moving, [.👉], [.R]),
-    Instruction(.moving, [.one], .moving, [.zero], [.R]),
-    Instruction(.moving, [.zero], .moving, [.one], [.R]),
-    Instruction(.moving, [.👈], .halt, [.👈], [.R]),
+    Instruction(.moving, [.ichi], .moving, [.rei], [.R]),
+    Instruction(.moving, [.rei], .moving, [.ichi], [.R]),
+    Instruction(.moving, [.👈], .halt, [.👈], [.S]),
 ]
-
-machine.tapes[0].tape = [.👉, .zero, .one, .zero, .one, .zero, .👈]
+let tape: [Symbol] = [.👉, .rei, .ichi, .rei, .ichi, .rei, .ichi, .rei, .ichi, .👈]
 
 try! machine.addInstruction(from: instructions)
+machine.tapes[0].tape = tape
+
 
 machine.run()
