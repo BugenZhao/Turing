@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Rainbow
 
 public class TuringMachine<State, Symbol> where State: Equatable, Symbol: Equatable {
     public typealias Inst = Instruction<State, Symbol>
@@ -78,7 +79,7 @@ public class TuringMachine<State, Symbol> where State: Equatable, Symbol: Equata
     public func dump() {
         print(">> Step \(stepCount)")
         tapes.forEach { tape in
-            print(tape)
+            print(tape, ", ", "\(state)".green, separator: "")
         }
     }
 }

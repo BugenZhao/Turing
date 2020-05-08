@@ -1,8 +1,10 @@
 import TuringLib
 
-enum Symbol {
+enum Symbol: String, CustomStringConvertible {
+    var description: String { return rawValue }
+
     case 👉, 👈
-    case zero, one
+    case zero = "0", one = "1"
 }
 
 enum State {

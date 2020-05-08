@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Rainbow
 
 public class Tape<Symbol>: CustomStringConvertible where Symbol: Equatable {
     public var tape = [Symbol]()
@@ -28,8 +29,16 @@ public class Tape<Symbol>: CustomStringConvertible where Symbol: Equatable {
         if head == tape.count { tape.append(symbol) }
         else { tape[head] = symbol }
     }
-    
+
     public var description: String {
-        return "\(tape), head=\(head)"
+        var result = "[ "
+        for i in 0..<tape.count {
+            if i == head { result.append(String(describing: tape[i]).onRed) }
+            else { result.append("\(tape[i])") }
+            result.append(", ")
+        }
+        result.append(head == tape.count ? "...".onRed : "...")
+        result.append(" ]")
+        return result
     }
 }
