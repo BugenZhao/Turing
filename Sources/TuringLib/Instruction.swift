@@ -17,13 +17,13 @@ public enum Direction: Equatable, Hashable {
 
 public struct Instruction<State, Symbol> where State: Equatable, Symbol: Equatable {
     public let fromState: State
-    public let fromSymbols: [Symbol]
+    public let fromSymbols: [Symbol?]
 
     public let toState: State
-    public let toSymbols: [Symbol]
+    public let toSymbols: [Symbol?]
     public let toDirections: [Direction]
 
-    public init(_ fromState: State, _ fromSymbols: [Symbol], _ toState: State, _ toSymbols: [Symbol], _ toDirections: [Direction]) {
+    public init(_ fromState: State, _ fromSymbols: [Symbol?], _ toState: State, _ toSymbols: [Symbol?], _ toDirections: [Direction]) {
         self.fromState = fromState
         self.fromSymbols = fromSymbols
         self.toState = toState

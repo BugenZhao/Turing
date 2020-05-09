@@ -17,14 +17,14 @@ enum State {
     case start, halt, moving
 }
 
-let machine = TuringMachine<State, Symbol>(tapeCount: 1, initialState: .start)
+let machine = TuringMachine<State, Symbol>(tapeCount: 2, initialState: .start)
 let instructions: [Instruction<State, Symbol>] = [
-    Instruction(.start, [.👉], .moving, [.👉], [.R]),
-    Instruction(.moving, [.ichi], .moving, [.rei], [.R]),
-    Instruction(.moving, [.rei], .moving, [.ichi], [.R]),
-    Instruction(.moving, [.👈], .halt, [.👈], [.S]),
+    Instruction(.start, [.👉, nil], .moving, [.👉], [.R, .R]),
+    Instruction(.moving, [.ichi, nil], .moving, [.rei], [.R, .R]),
+    Instruction(.moving, [.rei, nil], .moving, [.ichi], [.R, .R]),
+    Instruction(.moving, [.👈, nil], .halt, [.👈], [.S, .S]),
 ]
-let tape: [Symbol] = [.👉, .rei, .ichi, .rei, .ichi, .rei, .ichi, .rei, .ichi, .👈]
+let tape: [Symbol?] = [.👉, .rei, .ichi, .rei, .ichi, .rei, .👈]
 
 try! machine.addInstruction(from: instructions)
 machine.tapes[0].tape = tape

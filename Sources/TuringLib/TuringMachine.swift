@@ -11,11 +11,7 @@ import Rainbow
 public class TuringMachine<State, Symbol> where State: Equatable, Symbol: Equatable {
     public typealias Inst = Instruction<State, Symbol>
 
-    public enum TuringMachineError: Error {
-        case incorrectCount
-    }
-
-    public private(set) var tapes: [Tape<Symbol>]
+    public var tapes: [Tape<Symbol>]
     public private(set) var instructions: [Inst] = [Inst]()
 
     public var state: State
@@ -44,23 +40,26 @@ public class TuringMachine<State, Symbol> where State: Equatable, Symbol: Equata
     @discardableResult
     public func step(verbose: Bool = true) -> Bool {
         let foundInst = instructions.first { inst in
-            inst.fromState == state && inst.fromSymbols == tapes.map { $0.tape[$0.head] }
+            inst.fromState == state && inst.fromSymbols == tapes.map { tape in
+                var tape = tape
+                return try! tape.read()
+            }
         }
 
         if let foundInst = foundInst {
             self.state = foundInst.toState
             switch tapeCount {
             case 1:
-                tapes[0].write(foundInst.toSymbols[0])
+                try! tapes[0].write(foundInst.toSymbols[0])
                 tapes[0].move(foundInst.toDirections[0])
             default:
                 tapes[0].move(foundInst.toDirections[0])
                 for i in 1..<tapeCount {
-                    tapes[i].write(foundInst.toSymbols[i - 1])
+                    try! tapes[i].write(foundInst.toSymbols[i - 1])
                     tapes[i].move(foundInst.toDirections[i])
                 }
             }
-            
+
             stepCount += 1
             dump()
             return true
@@ -77,9 +76,9 @@ public class TuringMachine<State, Symbol> where State: Equatable, Symbol: Equata
     }
 
     public func dump() {
-        print(">> Step \(stepCount)")
-        tapes.forEach { tape in
-            print(tape, ", ", "\(state)".green, separator: "")
+        print(">> Step \(stepCount) => State", "\(state)".green)
+        tapes.enumerated().forEach { idx, tape in
+            print("Tape \(idx):", tape)
         }
     }
 }

@@ -8,11 +8,11 @@
 import Foundation
 import Rainbow
 
-public class Tape<Symbol>: CustomStringConvertible where Symbol: Equatable {
-    public var tape = [Symbol]()
+public struct Tape<Symbol>: CustomStringConvertible where Symbol: Equatable {
+    public var tape = [Symbol?]()
     public var head: Int = 0
 
-    public func move(_ direction: Direction) {
+    public mutating func move(_ direction: Direction) {
         switch direction {
         case .L:
             head -= 1
@@ -21,24 +21,35 @@ public class Tape<Symbol>: CustomStringConvertible where Symbol: Equatable {
         case .S:
             break
         }
+        while head >= tape.count { tape.append(nil) }
     }
 
-    public func write(_ symbol: Symbol) {
-        guard 0...tape.count ~= head else { fatalError() }
+    public mutating func write(_ symbol: Symbol?) throws {
+        guard 0... ~= head else { throw TuringMachineError.illegalPosition }
+        while head >= tape.count { tape.append(nil) }
+        tape[head] = symbol
+    }
 
-        if head == tape.count { tape.append(symbol) }
-        else { tape[head] = symbol }
+    public mutating func read() throws -> Symbol? {
+        guard 0... ~= head else { throw TuringMachineError.illegalPosition }
+        while head >= tape.count { tape.append(nil) }
+        return tape[head]
     }
 
     public var description: String {
         var result = "[ "
         for i in 0..<tape.count {
-            if i == head { result.append(String(describing: tape[i]).onRed) }
-            else { result.append("\(tape[i])") }
+            let s = tape[i] == nil ? "?" : String(describing: tape[i]!)
+            if i == head { result.append(s.onRed) }
+            else { result.append(s) }
             result.append(", ")
         }
         result.append(head == tape.count ? "...".onRed : "...")
         result.append(" ]")
         return result
+    }
+
+    public init() {
+        tape = [nil]
     }
 }
