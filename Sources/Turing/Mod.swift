@@ -12,12 +12,23 @@ import TuringLib
 func mod(x: Int, y: Int) -> Int {
     guard x > y && y >= 1 else { fatalError() }
 
-    enum Symbol: String, CustomStringConvertible {
+    enum Symbol: String, CustomStringConvertible, CustomLaTeXStringConvertible {
         case 👉 = ">", 👈 = "<"
         case rei = "0", ichi = "1"
 
         static var blank: Symbol? { return nil }
+        
         var description: String { return rawValue }
+        var latexDescription: String {
+            switch self {
+            case .👉:
+                return "\\triangleright"
+            case .👈:
+                return "\\triangleleft"
+            default:
+                return rawValue
+            }
+        }
     }
 
     enum State {
@@ -60,7 +71,7 @@ func mod(x: Int, y: Int) -> Int {
     try! machine.addInstruction(from: instructions)
     machine.tapes[0].tape = tape
 
-    machine.run(verbose: .half)
+    machine.run(verbose: .latex)
 
     let expected = x % y
     let tm = machine.tapes[0].count(.ichi)

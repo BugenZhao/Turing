@@ -12,7 +12,7 @@ public class TuringMachine<State, Symbol> where State: Equatable, Symbol: Equata
     public typealias Inst = Instruction<State, Symbol>
 
     public enum Verbose {
-        case no, half, full
+        case no, half, full, latex
     }
 
     public var tapes: [Tape<Symbol>]
@@ -64,11 +64,14 @@ public class TuringMachine<State, Symbol> where State: Equatable, Symbol: Equata
 
             stepCount += 1
             let newCheckpoint = (tapes.map { try! $0.read() }, state)
-            
             switch verbose {
+            case .latex where checkpoint == nil || newCheckpoint != checkpoint!:
+                if let s = self as? CustomLaTeXStringConvertible {
+                    print(s.latexDescription)
+                } else { fallthrough }
             case .full:
                 dump()
-            case .half where checkpoint == nil || newCheckpoint != checkpoint! :
+            case .half where checkpoint == nil || newCheckpoint != checkpoint!:
                 dump()
             default:
                 break
@@ -82,7 +85,17 @@ public class TuringMachine<State, Symbol> where State: Equatable, Symbol: Equata
     }
 
     public func run(verbose: Verbose = .full) {
-        if verbose == .full { dump() }
+        switch verbose {
+        case .latex:
+            if let s = self as? CustomLaTeXStringConvertible {
+                print(s.latexDescription)
+            } else { fallthrough }
+        case .full, .half:
+            dump()
+        default:
+            break
+        }
+        
         while true {
             if step(verbose: verbose) == false { break }
         }
@@ -93,5 +106,21 @@ public class TuringMachine<State, Symbol> where State: Equatable, Symbol: Equata
         tapes.enumerated().forEach { idx, tape in
             print("Tape \(idx):", tape)
         }
+    }
+}
+
+
+extension TuringMachine: CustomLaTeXStringConvertible where Symbol: CustomLaTeXStringConvertible {
+    public var latexDescription: String {
+        switch tapeCount {
+        case 1:
+            return "\\text{Step \(stepCount) }&\\rightarrow(q_{\(state)},& \(tapes[0].latexDescription))\\\\"
+        default:
+            return "Not implemented"
+        }
+    }
+
+    public func latexDump() {
+        print(self.latexDescription)
     }
 }

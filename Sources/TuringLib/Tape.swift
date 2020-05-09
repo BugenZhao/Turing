@@ -9,6 +9,8 @@ import Foundation
 import Rainbow
 
 public struct Tape<Symbol>: CustomStringConvertible where Symbol: Equatable {
+    public typealias ContentSymbol = Symbol
+
     public var tape = [Symbol?]()
     public var head: Int = 0
 
@@ -42,8 +44,8 @@ public struct Tape<Symbol>: CustomStringConvertible where Symbol: Equatable {
     public var description: String {
         var result = "[ "
         for i in 0..<tape.count {
-            let s = tape[i] == nil ? "_" : String(describing: tape[i]!)
-            if i == head { result.append(s.onRed) }
+            let s = tape[i] == nil ? "\u{25a1}" : String(describing: tape[i]!)
+            if i == head { result.append((s + "\u{332}").onRed) }
             else { result.append(s) }
             result.append(" ")
         }
@@ -54,5 +56,19 @@ public struct Tape<Symbol>: CustomStringConvertible where Symbol: Equatable {
 
     public init() {
         tape = [nil]
+    }
+}
+
+
+extension Tape: CustomLaTeXStringConvertible where Symbol: CustomLaTeXStringConvertible {
+    public var latexDescription: String {
+        var result = ""
+        for i in 0..<tape.count {
+            let s = tape[i] == nil ? "\\Box" : tape[i]!.latexDescription
+            if i == head { result.append("\\underline{\(s)}") }
+            else { result.append(s) }
+            result.append("  ")
+        }
+        return result
     }
 }
