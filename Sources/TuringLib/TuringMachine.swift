@@ -11,11 +11,16 @@ import Rainbow
 public class TuringMachine<State, Symbol> where State: Equatable, Symbol: Equatable {
     public typealias Inst = Instruction<State, Symbol>
 
+    public enum Verbose {
+        case no, half, full
+    }
+
     public var tapes: [Tape<Symbol>]
     public private(set) var instructions: [Inst] = [Inst]()
 
     public var state: State
     public var stepCount: Int = 0
+    var checkpoint: ([Symbol?], State)? = nil
 
     public var tapeCount: Int { return tapes.count }
 
@@ -38,12 +43,9 @@ public class TuringMachine<State, Symbol> where State: Equatable, Symbol: Equata
     }
 
     @discardableResult
-    public func step(verbose: Bool = true) -> Bool {
+    public func step(verbose: Verbose = .full) -> Bool {
         let foundInst = instructions.first { inst in
-            inst.fromState == state && inst.fromSymbols == tapes.map { tape in
-                var tape = tape
-                return try! tape.read()
-            }
+            inst.fromState == state && inst.fromSymbols == tapes.map { try! $0.read() }
         }
 
         if let foundInst = foundInst {
@@ -61,15 +63,26 @@ public class TuringMachine<State, Symbol> where State: Equatable, Symbol: Equata
             }
 
             stepCount += 1
-            if verbose { dump() }
+            let newCheckpoint = (tapes.map { try! $0.read() }, state)
+            
+            switch verbose {
+            case .full:
+                dump()
+            case .half where checkpoint == nil || newCheckpoint != checkpoint! :
+                dump()
+            default:
+                break
+            }
+
+            checkpoint = newCheckpoint
             return true
         }
 
         return false
     }
 
-    public func run(verbose: Bool = true) {
-        if verbose { dump() }
+    public func run(verbose: Verbose = .full) {
+        if verbose == .full { dump() }
         while true {
             if step(verbose: verbose) == false { break }
         }

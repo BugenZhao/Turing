@@ -30,9 +30,8 @@ public struct Tape<Symbol>: CustomStringConvertible where Symbol: Equatable {
         tape[head] = symbol
     }
 
-    public mutating func read() throws -> Symbol? {
-        guard 0... ~= head else { throw TuringMachineError.illegalPosition }
-        while head >= tape.count { tape.append(nil) }
+    public func read() throws -> Symbol? {
+        guard 0..<tape.count ~= head else { throw TuringMachineError.illegalPosition }
         return tape[head]
     }
 
@@ -43,10 +42,10 @@ public struct Tape<Symbol>: CustomStringConvertible where Symbol: Equatable {
     public var description: String {
         var result = "[ "
         for i in 0..<tape.count {
-            let s = tape[i] == nil ? "?" : String(describing: tape[i]!)
+            let s = tape[i] == nil ? "_" : String(describing: tape[i]!)
             if i == head { result.append(s.onRed) }
             else { result.append(s) }
-            result.append(", ")
+            result.append(" ")
         }
         result.append(head == tape.count ? "...".onRed : "...")
         result.append(" ]")

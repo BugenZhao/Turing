@@ -8,6 +8,7 @@
 import Foundation
 import TuringLib
 
+@discardableResult
 func mod(x: Int, y: Int) -> Int {
     guard x > y && y >= 1 else { fatalError() }
 
@@ -59,7 +60,7 @@ func mod(x: Int, y: Int) -> Int {
     try! machine.addInstruction(from: instructions)
     machine.tapes[0].tape = tape
 
-    machine.run(verbose: false)
+    machine.run(verbose: .half)
 
     let expected = x % y
     let tm = machine.tapes[0].count(.ichi)
