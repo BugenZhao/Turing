@@ -61,7 +61,7 @@ public class TuringMachine<State, Symbol> where State: Equatable, Symbol: Equata
             }
 
             stepCount += 1
-            dump()
+            if verbose { dump() }
             return true
         }
 
@@ -69,7 +69,7 @@ public class TuringMachine<State, Symbol> where State: Equatable, Symbol: Equata
     }
 
     public func run(verbose: Bool = true) {
-        dump()
+        if verbose { dump() }
         while true {
             if step(verbose: verbose) == false { break }
         }

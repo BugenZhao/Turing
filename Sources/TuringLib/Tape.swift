@@ -36,6 +36,10 @@ public struct Tape<Symbol>: CustomStringConvertible where Symbol: Equatable {
         return tape[head]
     }
 
+    public func count(_ symbol: Symbol?) -> Int {
+        return self.tape.reduce(0) { $0 + ($1 == symbol ? 1 : 0) }
+    }
+
     public var description: String {
         var result = "[ "
         for i in 0..<tape.count {
