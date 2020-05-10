@@ -15,22 +15,19 @@ enum State {
 }
 
 
-let machine = TuringMachine<State, Symbol>(tapeCount: 2, initialState: .start)
-
 let instructions: [Instruction<State, Symbol>] = [
     (.start, [.👉, nil]) ~~> (.moving, [.👉], [.R, .R]),
     (.moving, [.ichi, nil]) ~~> (.moving, [.rei], [.R, .R]),
     (.moving, [.rei, nil]) ~~> (.moving, [.ichi], [.R, .R]),
     (.moving, [.👈, nil]) ~~> (.halt, [.👈], [.S, .S]),
 ]
-
 let tape: [Symbol?] = [.👉, .rei, .ichi, .rei, .ichi, .rei, .👈]
 
 
-try! machine.addInstruction(from: instructions)
-machine.tapes[0].tape = tape
-
-machine.run()
+try! TuringMachine<State, Symbol>(tapeCount: 2, initialState: .start)
+    .addInstruction(from: instructions)
+    .putTape(tape, at: 0)
+    .run()
 ```
 
 ![Screenshot](Resources/example.png)

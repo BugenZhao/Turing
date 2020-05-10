@@ -24,17 +24,27 @@ public class TuringMachine<State, Symbol> where State: Equatable, Symbol: Equata
 
     public var tapeCount: Int { return tapes.count }
 
-    public func addInstruction(_ instruction: Inst) throws {
+    @discardableResult
+    public func addInstruction(_ instruction: Inst) throws -> Self {
         guard instruction.fromSymbols.count == tapeCount
             && instruction.toSymbols.count == max(tapeCount - 1, 1)
             && instruction.toDirections.count == tapeCount else {
                 throw TuringMachineError.incorrectCount
         }
         instructions.append(instruction)
+        return self
     }
 
-    public func addInstruction(from instructions: [Inst]) throws {
+    @discardableResult
+    public func addInstruction(from instructions: [Inst]) throws -> Self {
         instructions.forEach { try! self.addInstruction($0) }
+        return self
+    }
+
+    @discardableResult
+    public func putTape(_ tape: [Symbol?], at tapeIdx: Int) -> Self {
+        tapes[tapeIdx].tape = tape
+        return self
     }
 
     public init(tapeCount: Int, initialState: State) {
@@ -95,7 +105,7 @@ public class TuringMachine<State, Symbol> where State: Equatable, Symbol: Equata
         default:
             break
         }
-        
+
         while true {
             if step(verbose: verbose) == false { break }
         }
