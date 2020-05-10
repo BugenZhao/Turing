@@ -44,8 +44,8 @@ public struct Tape<Symbol>: CustomStringConvertible where Symbol: Equatable {
     public var description: String {
         var result = "[ "
         for i in 0..<tape.count {
-            let s = tape[i] == nil ? "\u{25a1}" : String(describing: tape[i]!)
-            if i == head { result.append((s + "\u{332}").onRed) }
+            let s = tape[i] == nil ? "\u{25a1}" : String(describing: tape[i]!) // square
+            if i == head { result.append((s + "\u{332}").onRed) } // underline
             else { result.append(s) }
             result.append(" ")
         }

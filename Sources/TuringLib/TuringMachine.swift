@@ -114,7 +114,7 @@ extension TuringMachine: CustomLaTeXStringConvertible where Symbol: CustomLaTeXS
     public var latexDescription: String {
         switch tapeCount {
         case 1:
-            return "\\text{Step \(stepCount) }&\\rightarrow(q_{\(state)},& \(tapes[0].latexDescription))\\\\"
+            return "\\text{Step \(stepCount) }&\\rightarrow(q_{\(state)} &{},{}& \(tapes[0].latexDescription))\\\\"
         default:
             return "Not implemented"
         }

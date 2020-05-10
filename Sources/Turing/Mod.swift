@@ -17,7 +17,7 @@ func mod(x: Int, y: Int) -> Int {
         case rei = "0", ichi = "1"
 
         static var blank: Symbol? { return nil }
-        
+
         var description: String { return rawValue }
         var latexDescription: String {
             switch self {
@@ -60,6 +60,9 @@ func mod(x: Int, y: Int) -> Int {
         Inst(.revY, [.ichi], .revY, [.👈], [.R]),
         Inst(.revY, [.👈], .halt, [.👈], [.S]),
     ]
+
+    instructions.forEach { print($0.latexDescription + " &{}\\cdots{}&\n\\text{Description}\\\\") }
+    print()
 
     var tape = [Symbol?]()
     tape.append(.👉)

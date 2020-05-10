@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum Direction: Equatable, Hashable {
+public enum Direction: String, Equatable, Hashable {
     case L, R, S
     static var left: Direction { .L }
     static var right: Direction { .R }
@@ -29,5 +29,21 @@ public struct Instruction<State, Symbol> where State: Equatable, Symbol: Equatab
         self.toState = toState
         self.toSymbols = toSymbols
         self.toDirections = toDirections
+    }
+}
+
+extension Instruction: CustomLaTeXStringConvertible where Symbol: CustomLaTeXStringConvertible {
+    public var latexDescription: String {
+        let from = fromSymbols.map { symbol in
+            return symbol == nil ? "\\Box" : symbol!.latexDescription // square
+        }.joined(separator: ", ")
+
+        let to = toSymbols.map { symbol in
+            return symbol == nil ? "\\Box" : symbol!.latexDescription // square
+        }.joined(separator: ", ")
+
+        let dir = toDirections.map(\.rawValue).joined(separator: ", ")
+
+        return "\\langle q_{\(fromState)}, \(from) \\rangle &\\rightarrow \\langle q_{\(toState)}, \(to), \(dir) \\rangle"
     }
 }
