@@ -8,10 +8,10 @@
 import Foundation
 import TuringLib
 
-infix operator ≡: MultiplicationPrecedence
+infix operator %%: MultiplicationPrecedence
 
 @discardableResult
-func ≡(x: Int, y: Int) -> Int {
+func %%(x: Int, y: Int) -> Int {
     guard x > y && y >= 1 else { fatalError() }
 
     enum Symbol: String, CustomStringConvertible, CustomLaTeXStringConvertible {
